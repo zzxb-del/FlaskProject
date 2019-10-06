@@ -17,3 +17,10 @@ class User(BaseModel):
     user_name = models.Column(models.String(32))
     email = models.Column(models.String(32))
     password = models.Column(models.String(32))
+
+class Curriculum(BaseModel):
+    __tablename__ = "curriculum"
+    c_id = models.Column(models.String(32))
+    c_name = models.Column(models.String(32))
+    c_time = models.Column(models.Date)
+

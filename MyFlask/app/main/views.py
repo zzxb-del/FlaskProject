@@ -4,8 +4,6 @@ from app.models import *
 from . import main
 import functools
 
-
-
 import hashlib
 #密码加密
 def setPassword(password):
@@ -89,3 +87,13 @@ def base():
 @loginValid
 def index():
     return render_template("index.html",**locals())
+
+from .get_Time import Calendar
+import datetime
+@main.route("/userinfo/")
+@loginValid
+def userinfo():
+    calendar = Calendar().return_month()
+    now = datetime.datetime.now()
+    month = now.month
+    return render_template("userinfo.html",**locals())
