@@ -1,5 +1,4 @@
 from flask import render_template,redirect,session
-
 from app.models import *
 from . import main
 import functools
@@ -97,3 +96,39 @@ def userinfo():
     now = datetime.datetime.now()
     month = now.month
     return render_template("userinfo.html",**locals())
+
+@main.route("/leave/",methods=["GET","POST"])
+@loginValid
+def leave():
+    if request.method == "POST":
+        data = request.form
+        request_user = data.get("request_username")
+        request_type = data.get("request_type")
+        request_start_time = data.get("request_start_time")
+        request_end_time = data.get("request_end_time")
+        request_days = data.get("request_days")
+        request_phone = data.get("request_phone")
+        request_description = data.get("request_description")
+
+        leave = Leave()
+        leave.request_id = request.cookies.get("id")
+        leave.request_name = request_user
+        leave.request_type = request_type
+        leave.request_start_time = request_start_time
+        leave.request_end_time = request_end_time
+        leave.request_days = request_days
+        leave.request_phone = request_phone
+        leave.request_description = request_description
+        leave.request_status = "0"
+        leave.save()
+        return redirect('/leave_list/1/')
+    return render_template("leave.html")
+
+from .cut_page import Pager
+@main.route("/leave_list/<int:page>/")
+@loginValid
+def leave_list(page):
+    leaves = Leave.query.all()
+    pager = Pager(leaves,2)
+    page_data = pager.page_data(page)
+    return render_template("leave_list.html",**locals())
